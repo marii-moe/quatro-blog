@@ -17,18 +17,18 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Install Python and Dependencies
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          cache: 'pip'
-      - run: pip install jupyter torch torchvision torchaudio
-      - run: pip install fastai
+#      - name: Install Python and Dependencies
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.10'
+#          cache: 'pip'
+#      - run: pip install jupyter torch torchvision torchaudio
+#      - run: pip install fastai
 #      - run: mamba install -c fastchan fastai
 
-      - name: Render and Publish
-        uses: quarto-dev/quarto-actions/publish@v2
-        with:
-          target: gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Render and Publish
+#        uses: quarto-dev/quarto-actions/publish@v2
+#        with:
+#          target: gh-pages
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
