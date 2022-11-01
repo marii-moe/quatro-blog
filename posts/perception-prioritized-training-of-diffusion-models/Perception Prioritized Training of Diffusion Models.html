@@ -304,9 +304,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prioritized_weights(l,t,g<span class="op">=</span><span class="fl">0.</span>):</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> l<span class="op">/</span>(k <span class="op">+</span> snr(t))<span class="op">**</span>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Here we go ahead and generate weights based on a <strong>linear</strong> noise schedule for different values of <span class="math inline">\(\gamma\)</span>. Notice how it is similar to the results from the paper.</p>
+<p>Here we go ahead and generate weights based on <strong>linear</strong> and <strong>cosine</strong> noise schedules for different values of <span class="math inline">\(\gamma\)</span>. Notice how it is similar to the results in the image from the paper above.</p>
 <div class="columns">
-<div class="column" style="width:40%;">
+<div class="column" style="width:50%;">
 <div class="cell" data-scrolled="true" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)),F.normalize(continuous_weights(at(Bt)),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
@@ -324,7 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="Perception%20Prioritized%20Training%20of%20Diffusion%20Models_files/figure-html/cell-12-output-2.png" class="img-fluid"></p>
 </div>
 </div>
-</div><p>Here we go ahead and generate weights based on a <strong>cosine</strong> noise schedule for different values of <span class="math inline">\(\gamma\)</span>. Notice how it is similar to the results from the paper.</p><div class="column" style="width:40%;">
+</div><div class="column" style="width:50%;">
 <div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plt.xlim(left<span class="op">=</span><span class="fl">1e-8</span>,right<span class="op">=</span><span class="fl">1e4</span>)</span>
