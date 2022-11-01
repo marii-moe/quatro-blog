@@ -1,5 +1,8 @@
 project:
   type: website
+  preview:
+    port: 7225
+    browser: false
 
 website:
   title: "blog"
@@ -12,8 +15,10 @@ website:
         href: https://twitter.com
 format:
   html:
-    theme: vapor
+    theme: Pulse
     css: styles.css
-
-
-
+  pdf:
+    documentclass: scrartcl
+    papersize: letter
+  revealjs:
+    scrollable: true
