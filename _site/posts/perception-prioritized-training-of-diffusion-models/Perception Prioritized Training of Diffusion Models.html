@@ -199,7 +199,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="background" class="level1">
 <h1>Background</h1>
 <p>First, a bit of review. Each <span class="math inline">\(x_t\)</span> is dependent on some <span class="math inline">\(x_{t-1}\)</span> in a Markov chain defined below. This we can also define in terms of <span class="math inline">\(a_t\)</span> and <span class="math inline">\(x_0\)</span>, so that we can calculate the amount of noise at each step without the calculation being Markovian(or dependent on the previous step). This essentially gives us a formula that is the original image <span class="math inline">\(x_0\)</span> plus some noise <span class="math inline">\(\epsilon\)</span></p>
-<p><span class="math inline">\(q(x_t|x_{t-1}) = \mathcal{N}(x_t;\sqrt{1-\beta_t}x_{t-1},\beta_t\textbf{I})\\ \epsilon\sim\mathcal{N}(0,\textbf{I})\\ a_t := \prod_{s=1}^t{1-\beta_s}\\ x_t = \sqrt{\alpha_t}x_0+\sqrt{1-\alpha_t}\epsilon\)</span></p>
+<p><span class="math inline">\(q(x_t|x_{t-1}) = \mathcal{N}(x_t;\sqrt{1-\beta_t}x_{t-1},\beta_t\textbf{I})\)</span></p>
+<p><span class="math inline">\(\epsilon\sim\mathcal{N}(0,\textbf{I})\)</span></p>
+<p><span class="math inline">\(a_t := \prod_{s=1}^t{1-\beta_s}\)</span></p>
+<p><span class="math inline">\(x_t = \sqrt{\alpha_t}x_0+\sqrt{1-\alpha_t}\epsilon\)</span></p>
 <p>Both <span class="math inline">\(\alpha_t\)</span> and <span class="math inline">\(\beta_t\)</span> are of interest to us, so we define the code here. We have 1000 values, one value for each time step <span class="math inline">\(t\)</span>.</p>
 <div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;skip&quot;}" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> at(Bt): <span class="cf">return</span> torch.cumprod(<span class="dv">1</span><span class="op">-</span>Bt,<span class="op">-</span><span class="dv">1</span>)</span>
@@ -213,7 +216,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="signal-to-noise-ratio" class="level1">
 <h1>Signal-to-Noise Ratio</h1>
 <p>Signal-to-noise ratio is very important for this paper. We if we put the below two formulas close together the relationship should be clear, remembers that <span class="math inline">\(x_0\)</span> is the original image, and <span class="math inline">\(\epsilon\)</span> is our noise.</p>
-<p><span class="math inline">\(x_t = \sqrt{\alpha_t}x_0+\sqrt{1-\alpha_t}\epsilon\\ SNR(t) = \frac{\alpha_t}{1-\alpha_t}\)</span></p>
+<p><span class="math inline">\(x_t = \sqrt{\alpha_t}x_0+\sqrt{1-\alpha_t}\epsilon\)</span></p>
+<p><span class="math inline">\(SNR(t) = \frac{\alpha_t}{1-\alpha_t}\)</span></p>
 <div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;skip&quot;}">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> snr(at): <span class="cf">return</span> at<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>at)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

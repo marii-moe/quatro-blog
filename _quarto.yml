@@ -20,5 +20,3 @@ format:
   pdf:
     documentclass: scrartcl
     papersize: letter
-  revealjs:
-    scrollable: true
