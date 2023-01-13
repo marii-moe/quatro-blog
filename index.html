@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.35">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">blog</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html">About</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <h1 class="title">blog</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(15)</span></div><div class="category" data-category="analysis">analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="code">code <span class="quarto-category-count">(1)</span></div><div class="category" data-category="news">news <span class="quarto-category-count">(2)</span></div></div></div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+
+
+
+
+
+
+
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1673627296201" data-listing-reading-time-sort="1.59">
+<div class="thumbnail">
+<a href="./posts/diffusion/Refactor.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./posts/diffusion/Refactor.html"></a></p>
+</div>
+<div class="body">
+<a href="./posts/diffusion/Refactor.html">
+<h3 class="no-anchor listing-title">
+DDPM
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+We create two new Tensor Types, one for our noise, and one for our timestep.
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/diffusion/Refactor.html">
+<div class="listing-author">
+marii
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-listing-file-modified-sort="1673626990042" data-listing-reading-time-sort="0.005">
+<div class="thumbnail">
+<a href="./posts/diffusion/index.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./posts/diffusion/index.html"></a></p>
+</div>
+<div class="body">
+<a href="./posts/diffusion/index.html">
+<h3 class="no-anchor listing-title">
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+diffusion
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/diffusion/index.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-listing-file-modified-sort="1673626990214" data-listing-reading-time-sort="2.92">
+<div class="thumbnail">
+<p><a href="./posts/perception-prioritized-training-of-diffusion-models/Perception Prioritized Training of Diffusion Models.html"> <img src="./posts/perception-prioritized-training-of-diffusion-models/attachment:diffusion_math.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/perception-prioritized-training-of-diffusion-models/Perception Prioritized Training of Diffusion Models.html">
+<h3 class="no-anchor listing-title">
+Perception Prioritized Training of Diffusion Models
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ execution_count=20}
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/perception-prioritized-training-of-diffusion-models/Perception Prioritized Training of Diffusion Models.html">
+<div class="listing-author">
+marii
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-listing-file-modified-sort="1673626990090" data-listing-reading-time-sort="1.82">
+<div class="thumbnail">
+<a href="./posts/misc/Backprop.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./posts/misc/Backprop.html"></a></p>
+</div>
+<div class="body">
+<a href="./posts/misc/Backprop.html">
+<h3 class="no-anchor listing-title">
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+First, what is a prediction? A prediction is some “guess” that ranges from 0-1, or 0-100%. We define that here as something that ranges from 0 to 1. (we leave out actual 0 for math reasons).
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/misc/Backprop.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="4" data-listing-file-modified-sort="1673626990118" data-listing-reading-time-sort="0.58">
+<div class="thumbnail">
+<a href="./posts/misc/LSH with random projection.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./posts/misc/LSH with random projection.html"></a></p>
+</div>
+<div class="body">
+<a href="./posts/misc/LSH with random projection.html">
+<h3 class="no-anchor listing-title">
+Problem setup
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+Going to use a relatively small number of buckets, could use much more if we wanted to have less total collisions.
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/misc/LSH with random projection.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="5" data-listing-file-modified-sort="1673626990138" data-listing-reading-time-sort="0.045">
+<div class="thumbnail">
+<a href="./posts/misc/Untitled-Copy1.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./posts/misc/Untitled-Copy1.html"></a></p>
+</div>
+<div class="body">
+<a href="./posts/misc/Untitled-Copy1.html">
+<h3 class="no-anchor listing-title">
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+<img src="Untitled-Copy1_files/figure-html/cell-5-output-2.png" class="img-fluid">
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/misc/Untitled-Copy1.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="6" data-listing-file-modified-sort="1673626990162" data-listing-reading-time-sort="0">
+<div class="thumbnail">
+<a href="./posts/misc/Untitled.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./posts/misc/Untitled.html"></a></p>
+</div>
+<div class="body">
+<a href="./posts/misc/Untitled.html">
+<h3 class="no-anchor listing-title">
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+<img src="Untitled_files/figure-html/cell-5-output-2.png" class="img-fluid">
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/misc/Untitled.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="7" data-listing-file-modified-sort="1673626990182" data-listing-reading-time-sort="0.795">
+<div class="thumbnail">
+<a href="./posts/misc/image_augs.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./posts/misc/image_augs.html"></a></p>
+</div>
+<div class="body">
+<a href="./posts/misc/image_augs.html">
+<h3 class="no-anchor listing-title">
+RandTransform
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+<img src="image_augs_files/figure-html/cell-6-output-1.png" class="img-fluid">
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/misc/image_augs.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="8" data-listing-file-modified-sort="1673626990222" data-listing-reading-time-sort="1.88">
+<div class="thumbnail">
+<p><a href="./posts/progressive-distillation/Untitled.html"> <img src="./posts/progressive-distillation/attachment:progressive_distillation.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/progressive-distillation/Untitled.html">
+<h3 class="no-anchor listing-title">
+Progressive Distillation for Fast Sampling of Diffusion Models
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/progressive-distillation/Untitled.html">
+<div class="listing-author">
+marii
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="9" data-listing-file-modified-sort="1673626990238" data-listing-reading-time-sort="0.58">
+<div class="thumbnail">
+<p><a href="./posts/sdedit/Untitled.html"> <img src="./posts/sdedit/attachment:sdedit1png.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/sdedit/Untitled.html">
+<h3 class="no-anchor listing-title">
+SDEDIT: GUIDED IMAGE SYNTHESIS AND EDITING WITH STOCHASTIC DIFFERENTIAL EQUATIONS
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/sdedit/Untitled.html">
+<div class="listing-author">
+marii
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="10" data-listing-file-modified-sort="1673626990018" data-listing-reading-time-sort="0">
+<div class="thumbnail">
+<a href="./posts/adan-optimizer/index.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./posts/adan-optimizer/index.html"></a></p>
+</div>
+<div class="body">
+<a href="./posts/adan-optimizer/index.html">
+<h3 class="no-anchor listing-title">
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/adan-optimizer/index.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="11" data-listing-file-modified-sort="1673626990066" data-listing-reading-time-sort="2.51">
+<div class="thumbnail">
+<p><a href="./posts/efficient-zero/index.html"> <img src="./posts/efficient-zero/attachment:mu.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/efficient-zero/index.html">
+<h3 class="no-anchor listing-title">
+MuZero
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+Lets define our alphabet soup: * h - calculates latent representation of state s from the past observation (board state, or previous frames) * s - state, latent representation of the environment * f - calculates p(policy) and v(value function) from s(state) * p - policy value for each action * v - value function, based on the reward. For atari n-step reward, final reward for board games. * a - some action, sampled from π/p when interacting with the environment, sampled from replay buffer during training. * g - calculates next s(state) and immediate reward(r), recieves previous state and an action as input * r - immediate reward * π - policy, approximately p
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/efficient-zero/index.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="12" data-listing-file-modified-sort="1673626990238" data-listing-reading-time-sort="0.005">
+<div class="thumbnail">
+<a href="./posts/unet/index.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./posts/unet/index.html"></a></p>
+</div>
+<div class="body">
+<a href="./posts/unet/index.html">
+<h3 class="no-anchor listing-title">
+Unet
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+hello
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/unet/index.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="13" data-categories="news,code,analysis" data-listing-date-sort="1660892400000" data-listing-file-modified-sort="1673626990218" data-listing-reading-time-sort="0.035">
+<div class="thumbnail">
+<p><a href="./posts/post-with-code/index.html"> <img src="./posts/post-with-code/image.jpg" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/post-with-code/index.html">
+<h3 class="no-anchor listing-title">
+Post With Code
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('news'); return false;">
+news
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
+code
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('analysis'); return false;">
+analysis
+</div>
+</div>
+<a href="./posts/post-with-code/index.html">
+<div class="listing-description">
+This is a post with executable code.
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/post-with-code/index.html">
+<div class="listing-date">
+Aug 19, 2022
+</div>
+<div class="listing-author">
+Harlow Malloc
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="14" data-categories="news" data-listing-date-sort="1660633200000" data-listing-file-modified-sort="1673626990238" data-listing-reading-time-sort="0.16">
+<div class="thumbnail">
+<p><a href="./posts/welcome/index.html"> <img src="./posts/welcome/thumbnail.jpg" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/welcome/index.html">
+<h3 class="no-anchor listing-title">
+Welcome To My Blog
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('news'); return false;">
+news
+</div>
+</div>
+<a href="./posts/welcome/index.html">
+<div class="listing-description">
+This is the first post in a Quarto blog. Welcome!
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/welcome/index.html">
+<div class="listing-date">
+Aug 16, 2022
+</div>
+<div class="listing-author">
+Tristan O’Malley
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
