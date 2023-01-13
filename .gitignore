@@ -1,3 +1,7 @@
 *~
 /.quarto/
 /posts/diffusion/wandb/
+*.pdf
+*figure-revealjs/
+*.ipynb_checkpoints/
+*models/

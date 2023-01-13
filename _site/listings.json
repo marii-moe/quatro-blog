@@ -3,8 +3,8 @@
     "listing": "/index.html",
     "items": [
       "/posts/adan-optimizer/index.html",
-      "/posts/diffusion/index.html",
       "/posts/diffusion/Refactor.html",
+      "/posts/diffusion/index.html",
       "/posts/unet/index.html",
       "/posts/efficient-zero/index.html",
       "/posts/perception-prioritized-training-of-diffusion-models/Perception Prioritized Training of Diffusion Models.html",
@@ -14,7 +14,9 @@
       "/posts/misc/Backprop.html",
       "/posts/misc/image_augs.html",
       "/posts/progressive-distillation/Untitled.html",
-      "/posts/sdedit/Untitled.html"
+      "/posts/sdedit/Untitled.html",
+      "/posts/post-with-code/index.html",
+      "/posts/welcome/index.html"
     ]
   }
 ]
