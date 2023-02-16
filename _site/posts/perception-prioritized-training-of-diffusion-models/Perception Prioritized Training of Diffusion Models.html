@@ -188,9 +188,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+<p>::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ execution_count=1}</p>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.basics <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> accumulate</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.vision.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;skip&quot;}" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;skip&quot;}" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> untar_data(URLs.IMAGENETTE_320)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>norm_tfm<span class="op">=</span>Normalize.from_stats(<span class="op">*</span>imagenet_stats,cuda<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_norm(img,nrows<span class="op">=</span><span class="va">None</span>): show_images((norm_tfm.decode(img).clamp(<span class="dv">0</span>,<span class="dv">1</span>)),nrows<span class="op">=</span>nrows)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> array(Image.<span class="bu">open</span>((path<span class="op">/</span><span class="st">'train'</span>).ls()[<span class="dv">0</span>].ls()[<span class="dv">0</span>]))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>norm_img <span class="op">=</span> norm_tfm(TensorImage(img.transpose(<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>)).<span class="bu">float</span>()[<span class="va">None</span>]<span class="op">/</span><span class="dv">255</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <section id="questions-for-thought" class="level1">
 <h1>Questions for Thought</h1>
-<p>These are a few questions to think about as you read. Come back and try to answer them at the end to check your understanding.</p>
 <ol type="1">
 <li>What is the Signal to Noise ratio?</li>
 <li>How does this paper reformulate the original weighting scheme in terms of SNR?</li>
@@ -201,24 +216,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="background" class="level1">
 <h1>Background</h1>
 <p>First, a bit of review. Each <span class="math inline">\(x_t\)</span> is dependent on some <span class="math inline">\(x_{t-1}\)</span> in a Markov chain defined below. This we can also define in terms of <span class="math inline">\(a_t\)</span> and <span class="math inline">\(x_0\)</span>, so that we can calculate the amount of noise at each step without the calculation being Markovian(or dependent on the previous step). This essentially gives us a formula that is the original image <span class="math inline">\(x_0\)</span> plus some noise <span class="math inline">\(\epsilon\)</span></p>
+<div class="columns">
+<div class="column" style="width:70%;">
 <p><span class="math inline">\(q(x_t|x_{t-1}) = \mathcal{N}(x_t;\sqrt{1-\beta_t}x_{t-1},\beta_t\textbf{I})\)</span></p>
 <p><span class="math inline">\(\epsilon\sim\mathcal{N}(0,\textbf{I})\)</span></p>
 <p><span class="math inline">\(a_t := \prod_{s=1}^t{1-\beta_s}\)</span></p>
 <p><span class="math inline">\(x_t = \sqrt{\alpha_t}x_0+\sqrt{1-\alpha_t}\epsilon\)</span></p>
 <p>Both <span class="math inline">\(\alpha_t\)</span> and <span class="math inline">\(\beta_t\)</span> are of interest to us, so we define the code here. We have 1000 values, one value for each time step <span class="math inline">\(t\)</span>.</p>
-<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> at(Bt): </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cumprod(<span class="dv">1</span><span class="op">-</span>Bt,<span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Bt<span class="op">=</span>torch.linspace(<span class="fl">1e-4</span>,<span class="fl">0.02</span>,<span class="dv">1000</span>) <span class="co">#schedule used in DDPM paper</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ats<span class="op">=</span>at(Bt)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> xt(x0,t,e):</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (ats[t])<span class="op">**</span><span class="fl">.5</span><span class="op">*</span>x0<span class="op">+</span>(<span class="dv">1</span><span class="op">-</span>ats[t])<span class="op">**</span><span class="fl">.5</span><span class="op">*</span>e</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>noised_img <span class="op">=</span> xt(norm_img,<span class="dv">400</span>,torch.randn_like(norm_img))</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>img_part <span class="op">=</span> xt(norm_img,<span class="dv">400</span>,torch.zeros_like(norm_img))</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>noise_part <span class="op">=</span> xt(torch.zeros_like(norm_img),<span class="dv">400</span>,torch.randn_like(norm_img))</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>show_norm(torch.cat((img_part,noise_part,noised_img)),nrows<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> at(Bt): </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cumprod(<span class="dv">1</span><span class="op">-</span>Bt,<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Bt<span class="op">=</span>torch.linspace(<span class="fl">1e-4</span>,<span class="fl">0.02</span>,<span class="dv">1000</span>) <span class="co">#schedule used in DDPM paper</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ats<span class="op">=</span>at(Bt)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> xt(x0,t,e):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (ats[t])<span class="op">**</span><span class="fl">.5</span><span class="op">*</span>x0<span class="op">+</span>(<span class="dv">1</span><span class="op">-</span>ats[t])<span class="op">**</span><span class="fl">.5</span><span class="op">*</span>e</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>noised_img <span class="op">=</span> xt(norm_img,<span class="dv">400</span>,torch.randn_like(norm_img))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>img_part <span class="op">=</span> xt(norm_img,<span class="dv">400</span>,torch.zeros_like(norm_img))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>noise_part <span class="op">=</span> xt(torch.zeros_like(norm_img),<span class="dv">400</span>,torch.randn_like(norm_img))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>show_norm(torch.cat((img_part,noise_part,noised_img)),nrows<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Perception%20Prioritized%20Training%20of%20Diffusion%20Models_files/figure-html/cell-6-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Perception%20Prioritized%20Training%20of%20Diffusion%20Models_files/figure-html/diffusion_math.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">diffusion_math.png</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -228,39 +254,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="math inline">\(x_t = \sqrt{\alpha_t}x_0+\sqrt{1-\alpha_t}\epsilon\)</span></p>
 <p><span class="math inline">\(SNR(t) = \frac{\alpha_t}{1-\alpha_t}\)</span></p>
 <div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> snr(at): <span class="cf">return</span> at<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>at)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> snr(at): <span class="cf">return</span> at<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>at)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="columns">
+<div class="column" style="width:50%;">
 <p>Another noise schedule that is investigated is the cosine noise schedule, we define the code for it below.</p>
 <div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;skip&quot;}" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>s<span class="op">=</span><span class="fl">0.008</span> <span class="co">#from Improved Denoising Diffusion Probabilistic Models</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cos_sched(at): </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    at <span class="op">=</span> torch.linspace(<span class="dv">0</span>,<span class="dv">1</span>,at.shape[<span class="dv">0</span>])</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cos((at<span class="op">+</span>s)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>s)<span class="op">*</span>torch.pi<span class="op">/</span><span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>s<span class="op">=</span><span class="fl">0.008</span> <span class="co">#from Improved Denoising Diffusion Probabilistic Models</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cos_sched(at): </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    at <span class="op">=</span> torch.linspace(<span class="dv">0</span>,<span class="dv">1</span>,at.shape[<span class="dv">0</span>])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cos((at<span class="op">+</span>s)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>s)<span class="op">*</span>torch.pi<span class="op">/</span><span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can now take a look at the noise schedule per diffusion step <span class="math inline">\(t\)</span>. Remeber low <span class="math inline">\(\alpha_t\)</span> means more noise <span class="math inline">\(\epsilon\)</span>.</p>
 <div class="cell" data-scrolled="true" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.plot(at(Bt))</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plt.plot(cos_sched(Bt))</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Alphas a_t'</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Diffusion Steps (t)'</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Noise Schedules'</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Cosine Schedule'</span>,<span class="st">'Linear Schedule'</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plt.plot(at(Bt))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plt.plot(cos_sched(Bt))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Alphas a_t'</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Diffusion Steps (t)'</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Noise Schedules'</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Cosine Schedule'</span>,<span class="st">'Linear Schedule'</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Perception%20Prioritized%20Training%20of%20Diffusion%20Models_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
 </div>
+</div><div class="column" style="width:50%;">
 <p>Now we can graph the signal to noise ratio for both the cosine and linear schedules.</p>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">'log'</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>plt.ylim(top<span class="op">=</span><span class="fl">1e4</span>,bottom<span class="op">=</span><span class="fl">1e-8</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)))</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Signal-to-Noise Ratio (SNR)'</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Diffusion Steps (t)'</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Signal-to-Noise Ratio (SNR)'</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Cosine Schedule'</span>,<span class="st">'Linear Schedule'</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">'log'</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>plt.ylim(top<span class="op">=</span><span class="fl">1e4</span>,bottom<span class="op">=</span><span class="fl">1e-8</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Signal-to-Noise Ratio (SNR)'</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Diffusion Steps (t)'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Signal-to-Noise Ratio (SNR)'</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Cosine Schedule'</span>,<span class="st">'Linear Schedule'</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Perception%20Prioritized%20Training%20of%20Diffusion%20Models_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
+</div>
+</div>
 </div>
 </div>
 <p>Notice that we get very similar results to the paper as seen below.</p>
@@ -274,32 +305,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="continuous-weights" class="level1">
 <h1>Continuous Weights</h1>
 <p>Okay, now we need to determine the weights above. This is the goal of the paper. First we look at the first contribution, a way to calculate the weights in terms of the signal-to-weight ratio, which is a continuous version of the weighting scheme introduced in the DDPM paper. The derivation of this is in the paper’s appendix.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
 <p><span class="math inline">\(\lambda_t = \frac{SNR(t)}{SNR^\prime(t)}\)</span></p>
 <p><span class="math inline">\(SNR^\prime(t) = \frac{dSNR(t)}{dt}\)</span></p>
-<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Ho_weights(Bt,at):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="dv">1</span><span class="op">-</span>Bt)<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>at)<span class="op">/</span>Bt</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> continuous_weights(at):</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> <span class="op">-</span>snr(at[<span class="dv">1</span>:])<span class="op">/</span>(snr(at[<span class="dv">1</span>:])<span class="op">-</span>snr(at[:<span class="op">-</span><span class="dv">1</span>]))</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cat((weights[<span class="dv">0</span>:<span class="dv">1</span>],weights)) <span class="co">#we just make a copy of the first to get same shape</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Ho_weights(Bt,at):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="dv">1</span><span class="op">-</span>Bt)<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>at)<span class="op">/</span>Bt</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> continuous_weights(at):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> <span class="op">-</span>snr(at[<span class="dv">1</span>:])<span class="op">/</span>(snr(at[<span class="dv">1</span>:])<span class="op">-</span>snr(at[:<span class="op">-</span><span class="dv">1</span>]))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cat((weights[<span class="dv">0</span>:<span class="dv">1</span>],weights)) <span class="co">#we just make a copy of the first to get same shape</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div><div class="column" style="width:50%;">
 <p>We can now compare the unnormalized weights of the continuous weight schedule and the one in the DDPM paper. They are fairly close.</p>
-<div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> plt.style.context(<span class="st">'fivethirtyeight'</span>):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    plt.plot(Ho_weights(Bt,at(Bt)))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    plt.plot(continuous_weights(at(Bt)),linewidth<span class="op">=</span><span class="dv">6</span>,linestyle<span class="op">=</span><span class="st">':'</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Weights(λ_t)'</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Diffusion Steps(t)'</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'Comparison of Ho and Continuous Weights'</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    plt.legend([<span class="st">'Ho'</span>,<span class="st">'Continuous'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> plt.style.context(<span class="st">'fivethirtyeight'</span>):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    plt.plot(Ho_weights(Bt,at(Bt)))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    plt.plot(continuous_weights(at(Bt)),linewidth<span class="op">=</span><span class="dv">6</span>,linestyle<span class="op">=</span><span class="st">':'</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Weights(λ_t)'</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Diffusion Steps(t)'</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'Comparison of Ho and Continuous Weights'</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    plt.legend([<span class="st">'Ho'</span>,<span class="st">'Continuous'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Perception%20Prioritized%20Training%20of%20Diffusion%20Models_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+</div>
+</div>
 </div>
 </div>
 </section>
 <section id="the-content" class="level1">
 <h1>The Content</h1>
-<p>The author’s goals from this point on is to weight the content higher, which happens at this middle signal-to-noise ratios.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Perception%20Prioritized%20Training%20of%20Diffusion%20Models_files/figure-html/diffusion_content.png" class="img-fluid figure-img"></p>
@@ -309,43 +344,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="prioritized-weight-schedule" class="level2">
 <h2 class="anchored" data-anchor-id="prioritized-weight-schedule">Prioritized Weight Schedule</h2>
 <p>Next we can look at the prioritized weight schedule. The main contribution of the paper. <span class="math inline">\(\lambda_t\)</span> is our continuous weights from above, k is a constant set to <span class="math inline">\(1\)</span>. <span class="math inline">\(\gamma\)</span> is a hyperparameter that we can control, but it doesn’t work so well at over 2, because “We empirically observed that γ over 2 suffers noise artifacts in the sample because it assigns almost zero weight to the clean-up stage” (quoting paper).</p>
+<div class="columns">
+<div class="column" style="width:50%;">
 <p><span class="math inline">\(\lambda_t^\prime = \frac{\lambda_t}{(k+SNR(t))^\gamma}\)</span></p>
+</div><div class="column" style="width:50%;">
 <p>And, here is it in code. <span class="math inline">\(\gamma=0\)</span> essentially turns the prioritized weighting mechanism off, and gives us the same result as the weighting mechanism in the DDPM paper.</p>
-<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>k<span class="op">=</span><span class="fl">1.</span> <span class="co">#set for nice math reasons</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prioritized_weights(l,t,g<span class="op">=</span><span class="fl">0.</span>):</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> l<span class="op">/</span>(k <span class="op">+</span> snr(t))<span class="op">**</span>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>k<span class="op">=</span><span class="fl">1.</span> <span class="co">#set for nice math reasons</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prioritized_weights(l,t,g<span class="op">=</span><span class="fl">0.</span>):</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> l<span class="op">/</span>(k <span class="op">+</span> snr(t))<span class="op">**</span>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
 </div>
 <p>Here we go ahead and generate weights based on <strong>linear</strong> and <strong>cosine</strong> noise schedules for different values of <span class="math inline">\(\gamma\)</span>. Notice how it is similar to the results in the image from the paper above.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="cell" data-scrolled="true" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)),F.normalize(continuous_weights(at(Bt)),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)),F.normalize(prioritized_weights(continuous_weights(at(Bt)),at(Bt),g<span class="op">=</span><span class="fl">0.5</span>),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)),F.normalize(prioritized_weights(continuous_weights(at(Bt)),at(Bt),g<span class="op">=</span><span class="fl">1.</span>),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)),torch.full_like(Bt,<span class="fl">0.001</span>))</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Weights(λ′_t)'</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Signal-to-Noise Ratio (SNR)'</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Linear Schedules Weights'</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Baseline'</span>,<span class="st">'γ=0.5'</span>,<span class="st">'γ=1'</span>,<span class="st">'vlb'</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-scrolled="true" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)),F.normalize(continuous_weights(at(Bt)),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)),F.normalize(prioritized_weights(continuous_weights(at(Bt)),at(Bt),g<span class="op">=</span><span class="fl">0.5</span>),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)),F.normalize(prioritized_weights(continuous_weights(at(Bt)),at(Bt),g<span class="op">=</span><span class="fl">1.</span>),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(at(Bt)),torch.full_like(Bt,<span class="fl">0.001</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Weights(λ′_t)'</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Signal-to-Noise Ratio (SNR)'</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Linear Schedules Weights'</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Baseline'</span>,<span class="st">'γ=0.5'</span>,<span class="st">'γ=1'</span>,<span class="st">'vlb'</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Perception%20Prioritized%20Training%20of%20Diffusion%20Models_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
-<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>plt.xlim(left<span class="op">=</span><span class="fl">1e-8</span>,right<span class="op">=</span><span class="fl">1e4</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)),F.normalize(continuous_weights(cos_sched(Bt)),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)),F.normalize(prioritized_weights(continuous_weights(cos_sched(Bt)),cos_sched(Bt),g<span class="op">=</span><span class="fl">0.5</span>),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)),F.normalize(prioritized_weights(continuous_weights(cos_sched(Bt)),cos_sched(Bt),g<span class="op">=</span><span class="fl">1.</span>),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)),torch.full_like(Bt,<span class="fl">0.001</span>))</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Weights(λ′_t)'</span>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Signal-to-Noise Ratio (SNR)'</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cosine Schedules Weights'</span>)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Baseline'</span>,<span class="st">'γ=0.5'</span>,<span class="st">'γ=1'</span>,<span class="st">'vlb'</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;-&quot;}" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>plt.xlim(left<span class="op">=</span><span class="fl">1e-8</span>,right<span class="op">=</span><span class="fl">1e4</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)),F.normalize(continuous_weights(cos_sched(Bt)),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)),F.normalize(prioritized_weights(continuous_weights(cos_sched(Bt)),cos_sched(Bt),g<span class="op">=</span><span class="fl">0.5</span>),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)),F.normalize(prioritized_weights(continuous_weights(cos_sched(Bt)),cos_sched(Bt),g<span class="op">=</span><span class="fl">1.</span>),p<span class="op">=</span><span class="fl">1.</span>,dim<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>plt.plot(snr(cos_sched(Bt)),torch.full_like(Bt,<span class="fl">0.001</span>))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Weights(λ′_t)'</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Signal-to-Noise Ratio (SNR)'</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cosine Schedules Weights'</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Baseline'</span>,<span class="st">'γ=0.5'</span>,<span class="st">'γ=1'</span>,<span class="st">'vlb'</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Perception%20Prioritized%20Training%20of%20Diffusion%20Models_files/figure-html/cell-15-output-1.png" class="img-fluid"></p>
 </div>
@@ -367,6 +406,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="references" class="level1">
 <h1>References</h1>
 <p>https://arxiv.org/abs/2204.00227</p>
+<p>::: {.cell 0=‘h’ 1=‘i’ 2=‘d’ 3=‘e’ execution_count=14}</p>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nbdev.export <span class="im">import</span> nb_export</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#nbdev_export()</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>nb_export(<span class="st">'Perception Prioritized Training of Diffusion Models.ipynb'</span>, <span class="st">'../blog'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
 
 
 </section>
